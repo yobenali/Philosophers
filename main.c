@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 19:29:09 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/08 23:02:28 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/09 14:41:55 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	ft_init_philo(t_philo *philos, t_all *init)
 	int	i;
 
 	i = 0;
+	init->simul = ft_get_time();
 	while (i < init->nb_p)
 	{	
 		philos[i].index = i + 1;
@@ -76,6 +77,7 @@ int	ft_check_flag(t_philo *philos)
 void	ft_print_philo(t_philo *philos, char *str)
 {
 	pthread_mutex_lock(&philos->all->printing);
+	// printf("%ld\n%ld\n", ft_get_time(), philos->all->simul);
 	printf("%ld %d %s\n", ft_get_time() - philos->all->simul, philos->index, str);
 	pthread_mutex_unlock(&philos->all->printing);
 }
@@ -87,7 +89,7 @@ void	ft_sleep(long time)
 	time_to_reach = ft_get_time() + time;
 	usleep(time * 0.90 / 1000);
 	while (ft_get_time() < time_to_reach)
-		usleep(10);
+		usleep(37);
 }
 
 void	*routine(void *p)
@@ -100,10 +102,10 @@ void	*routine(void *p)
 		ft_print_philo(philos, "has taken a fork");
 		pthread_mutex_lock(philos->nxt_fork);
 		ft_print_philo(philos, "has taken a fork");
+		ft_print_philo(philos, "is eating");
 		pthread_mutex_lock(&philos->read_meals);
 		philos->l_e = ft_get_time();
 		pthread_mutex_unlock(&philos->read_meals);
-		ft_print_philo(philos, "is eating");
 		
 		ft_sleep(philos->all->tt_e);
 		
@@ -165,25 +167,54 @@ int	ft_init_data(char **argv, t_all *init)
 		}
 	pthread_mutex_init(&init->printing, NULL);
 	pthread_mutex_init(&init->r_flag, NULL);
-	init->simul = ft_get_time();
+	// init->simul = ft_get_time();
+	// printf("%ld\n", init->simul);
 	return (EXIT_SUCCESS);
+}
+
+void	ft_supervisor(t_philo *philos)
+{
+	index	i;
+
+	while (1)
+	{
+		i = 0;
+		while (i < philos->all->nb_p)
+		{
+			pthread_mutex_lock(&philos[i].read_meals);
+			pthread_mutex_lock(&philos->all->printing);
+			if (ft_get_time() - philos[i].l_e >= philos[i].all->tt_d)
+			{
+				pthread_mutex_lock(&philos->all->r_flag);
+				philos->all->flag = 0;
+				pthread_mutex_unlock(&philos->all->r_flag);
+				printf("%ld %d died\n", ft_get_time() - philos->all->simul, philos->index);
+				return ;
+			}
+			pthread_mutex_unlock(&philos->all->printing);
+			pthread_mutex_unlock(&philos[i].read_meals);
+			i++;
+		}
+		usleep(50);
+	}
 }
 
 int	main(int argc, char **argv)
 {
-	t_all	init;
+	t_all	*init;
 	t_philo	*philos;
 
 	if (argc == 5 || argc == 6)
 	{
-		if (ft_init_data(argv, &init) == EXIT_FAILURE)
+		init = malloc(sizeof(t_all));
+		if (ft_init_data(argv, init) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
-		philos = malloc(sizeof(t_philo) * init.nb_p);
-		ft_init_philo(philos, &init);
-		if(ft_creat(philos, &init) == EXIT_FAILURE)
+		philos = malloc(sizeof(t_philo) * init->nb_p);
+		ft_init_philo(philos, init);
+		if(ft_creat(philos, init) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
-		while (1);
-		
+		ft_supervisor(philos);
+		return (EXIT_FAILURE);
 	}
 	else
 		write (2, "Error in passed args", 21);

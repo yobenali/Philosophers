@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 20:50:36 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/08 22:23:42 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/09 12:29:25 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <limits.h>
 # include <pthread.h>
 # include <sys/time.h>
+
+typedef int	index;
 
 typedef struct s_all
 {
@@ -38,8 +40,8 @@ typedef struct s_philo
 	long			l_e;
 	long			n_e;
 	int				index;
-	pthread_mutex_t	fork;
 	pthread_mutex_t	read_meals;
+	pthread_mutex_t	fork;
 	pthread_mutex_t	*nxt_fork;	
 	t_all			*all;
 }	t_philo;
