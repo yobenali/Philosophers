@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 19:29:09 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/09 14:41:55 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/10 17:44:10 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,14 @@ int	ft_check_flag(t_philo *philos)
 		return (0);
 	}
 	pthread_mutex_unlock(&philos->all->r_flag);
-	return (1);	
+	return (1);
 }
 
 void	ft_print_philo(t_philo *philos, char *str)
 {
 	pthread_mutex_lock(&philos->all->printing);
-	// printf("%ld\n%ld\n", ft_get_time(), philos->all->simul);
-	printf("%ld %d %s\n", ft_get_time() - philos->all->simul, philos->index, str);
+	printf("%ld %d %s\n", ft_get_time() - philos->all->simul \
+		, philos->index, str);
 	pthread_mutex_unlock(&philos->all->printing);
 }
 
@@ -94,8 +94,9 @@ void	ft_sleep(long time)
 
 void	*routine(void *p)
 {
-	t_philo *philos = (t_philo *)p;
+	t_philo	*philos;
 
+	philos = (t_philo *)p;
 	while (ft_check_flag(philos))
 	{
 		pthread_mutex_lock(&philos->fork);
@@ -106,15 +107,18 @@ void	*routine(void *p)
 		pthread_mutex_lock(&philos->read_meals);
 		philos->l_e = ft_get_time();
 		pthread_mutex_unlock(&philos->read_meals);
-		
 		ft_sleep(philos->all->tt_e);
-		
 		pthread_mutex_lock(&philos->read_meals);
 		philos->n_e++;
+		if (philos->n_e >= philos->all->e_t)
+		{
+			pthread_mutex_lock(&philos->all->check_eat);
+			philos->all->check++;
+			pthread_mutex_unlock(&philos->all->check_eat);
+		}
 		pthread_mutex_unlock(&philos->read_meals);
 		pthread_mutex_unlock(philos->nxt_fork);
 		pthread_mutex_unlock(&philos->fork);
-
 		ft_print_philo(philos, "is sleeping");
 		ft_sleep(philos->all->tt_s);
 		ft_print_philo(philos, "is thinking");
@@ -142,7 +146,7 @@ int	ft_creat(t_philo *philos, t_all *init)
 		if (pthread_create(&philos[i].philo, NULL, routine, &philos[i]) != 0)
 			return (EXIT_FAILURE);
 		if (pthread_detach(philos[i].philo) != 0)
-			return (EXIT_FAILURE);		
+			return (EXIT_FAILURE);
 		i += 2;
 	}
 	return (EXIT_SUCCESS);
@@ -155,20 +159,34 @@ int	ft_init_data(char **argv, t_all *init)
 	init->tt_e = ft_atoi(argv[3]);
 	init->tt_s = ft_atoi(argv[4]);
 	init->flag = 1;
+	init->check = 0;
 	if (argv[5])
 		init->e_t = ft_atoi(argv[5]);
 	else
 		init->e_t = -1;
 	if (init->nb_p <= 0 || init->tt_d <= 0 || init->tt_e <= 0 \
 		|| init->tt_s <= 0 || (argv[5] && init->e_t <= 0))
-		{
-			write (2, "I only accepte positive numbers greater than 1", 47);
-			return (EXIT_FAILURE);
-		}
+	{
+		write (2, "I only accepte positive numbers greater than 1", 47);
+		return (EXIT_FAILURE);
+	}
 	pthread_mutex_init(&init->printing, NULL);
 	pthread_mutex_init(&init->r_flag, NULL);
-	// init->simul = ft_get_time();
-	// printf("%ld\n", init->simul);
+	pthread_mutex_init(&init->check_eat, NULL);
+	return (EXIT_SUCCESS);
+}
+
+int	ft_check_meals(t_philo *philos, index i)
+{
+	pthread_mutex_lock(&philos[i].all->check_eat);
+	if (philos->all->check == philos->all->nb_p)
+	{
+		pthread_mutex_lock(&philos->all->r_flag);
+		philos->all->flag = 0;
+		pthread_mutex_unlock(&philos->all->r_flag);
+		return (EXIT_FAILURE);
+	}
+	pthread_mutex_unlock(&philos[i].all->check_eat);
 	return (EXIT_SUCCESS);
 }
 
@@ -181,14 +199,17 @@ void	ft_supervisor(t_philo *philos)
 		i = 0;
 		while (i < philos->all->nb_p)
 		{
-			pthread_mutex_lock(&philos[i].read_meals);
 			pthread_mutex_lock(&philos->all->printing);
+			if (ft_check_meals(philos, i) == EXIT_FAILURE)
+				return ;
+			pthread_mutex_lock(&philos[i].read_meals);
 			if (ft_get_time() - philos[i].l_e >= philos[i].all->tt_d)
 			{
 				pthread_mutex_lock(&philos->all->r_flag);
 				philos->all->flag = 0;
 				pthread_mutex_unlock(&philos->all->r_flag);
-				printf("%ld %d died\n", ft_get_time() - philos->all->simul, philos->index);
+				printf("%ld %d died\n", ft_get_time() - philos->all->simul, \
+					philos->index);
 				return ;
 			}
 			pthread_mutex_unlock(&philos->all->printing);
@@ -211,7 +232,7 @@ int	main(int argc, char **argv)
 			return (EXIT_FAILURE);
 		philos = malloc(sizeof(t_philo) * init->nb_p);
 		ft_init_philo(philos, init);
-		if(ft_creat(philos, init) == EXIT_FAILURE)
+		if (ft_creat(philos, init) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		ft_supervisor(philos);
 		return (EXIT_FAILURE);
