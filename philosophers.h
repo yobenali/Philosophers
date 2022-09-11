@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 20:50:36 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/10 16:53:19 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/11 16:44:27 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-typedef int	index;
+typedef int	t_index;
 
 typedef struct s_all
 {
@@ -47,5 +47,15 @@ typedef struct s_philo
 	pthread_mutex_t	*nxt_fork;	
 	t_all			*all;
 }	t_philo;
+
+int		ft_atoi(char *str);
+int		ft_check_flag(t_philo *philos);
+int		ft_creat(t_philo *philos, t_all *init);
+int		ft_check_meals(t_philo *philos, t_index i);
+long	ft_get_time(void);
+void	*routine(void *p);
+void	ft_sleep(long time);
+void	ft_supervisor(t_philo *philos);
+void	ft_print_philo(t_philo *philos, char *str);
 
 #endif
