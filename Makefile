@@ -1,10 +1,10 @@
 NAME = philosophers
 
-SRC = philo.c utils.c utils2.c
+SRC = philo/philo.c philo/utils.c philo/utils2.c
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread #-g -fsanitize=thread
 
 $(NAME) :
 	$(CC) $(CFLAGS) $(SRC) -o $(NAME)
@@ -12,10 +12,10 @@ $(NAME) :
 all	: $(NAME)
 
 clean :
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
 
 fclean : clean
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
 
 re : clean fclean all
 

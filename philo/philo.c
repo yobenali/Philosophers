@@ -85,7 +85,7 @@ int	ft_init_data(char **argv, t_all *init)
 	if (init->nb_p <= 0 || init->tt_d <= 0 || init->tt_e <= 0 \
 		|| init->tt_s <= 0 || (argv[5] && init->e_t <= 0))
 	{
-		write (2, "I only accepte positive numbers greater than 1", 47);
+		write (2, "I only accepte positive numbers greater than 0", 47);
 		return (EXIT_FAILURE);
 	}
 	pthread_mutex_init(&init->printing, NULL);
