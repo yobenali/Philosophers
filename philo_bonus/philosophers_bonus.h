@@ -32,7 +32,7 @@ typedef struct s_all
 	int				tt_e;
 	int				tt_s;
 	int				e_t;
-	int				pid;
+	pid_t			*pid;
 	t_time			simul;
 	sem_t       	*printing;
 	sem_t	        *forks;

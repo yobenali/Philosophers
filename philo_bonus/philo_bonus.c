@@ -41,19 +41,65 @@ void	ft_supervisor(t_philo *philos, t_index i)
 	}
 }
 
+void	ft_print_philo(t_philo *philos, char *str)
+{
+	sem_wait(&philos->all->printing);
+	printf("%d %d %s\n", ft_get_time(philos->all->simul), philos->index, str);
+	sem_post(&philos->all->printing);
+}
+
+void	ft_sleep(long time)
+{
+	long	time_to_reach;
+
+	time_to_reach = ft_get_time() + time;
+	usleep((time * 0.90) / 1000);
+	while (ft_get_time() < time_to_reach)
+		usleep(50);
+}
+
+void	*routine(void *p)
+{
+	t_philo *philos;
+
+	philos = (t_philo *)p;
+	if (philos->index % 2 != 0)
+		usleep(500);
+	while (1)
+	{
+		sem_wait(&philos->all->forks);
+		ft_print_philo(philos, "has taken a fork");
+		sem_wait(&philos->all->forks);
+		ft_print_philo(philos, "has taken a fork");
+		ft_print_philo(philos, "is eating");
+		gettimeofday(&philos->l_e, NULL);
+		ft_sleep(&philos->all->tt_e);
+		sem_wait(&philos->read_meals);
+		philos->n_e++;
+		sem_post(&philos->read_meals);
+		sem_post(&philos->all->forks);
+		sem_post(&philos->all->forks);
+		ft_print_philo(philos, "is sleeping");
+		ft_sleep(&philos->all->tt_s);
+		ft_print_philo(philos, "is thinking");
+	}
+	return (0);
+}
+
 int	ft_create(t_philo *philos, t_all *init)
 {
 	int i = 0;
 	
+	init->pid = malloc(sizeof(pid_t) * init->nb_p);
 	while (i < init->nb_p)
 	{
-		init->pid = fork();
-		if (init->pid == -1)
+		init->pid[i] = fork();
+		if (init->pid[i] == -1)
 		{
 			write(2, "Process failed", 15);
 			exit(EXIT_FAILURE);
 		}
-		if (init->pid == 0)
+		if (init->pid[i] == 0)
 		{
 			if (pthread_create(&philos[i].philo, NULL, routine, &philos[i]) != 0)
 				exit(EXIT_FAILURE);
