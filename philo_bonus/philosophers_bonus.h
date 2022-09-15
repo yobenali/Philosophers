@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 00:48:18 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/15 02:20:49 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/15 22:58:43 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,12 @@
 # include <semaphore.h>
 # include <sys/time.h>
 # include <string.h>
+# include <signal.h>
 
-typedef int	t_index;
-typedef	struct timeval t_time;
+# define PHILO_IS_FULL 3
 
-#define PHILO_IS_FULL 3
+typedef	int	t_index;
+typedef struct timeval t_time;
 typedef struct s_all
 {
 	int				nb_p;
@@ -38,7 +39,7 @@ typedef struct s_all
 	sem_t	        *forks;
 }	t_all;
 
-typedef struct s_philo
+typedef struct	s_philo
 {
 	int				n_e;
 	int				flag;
@@ -52,7 +53,7 @@ typedef struct s_philo
 int		ft_atoi(char *str);
 void	ft_check_death(t_philo *philos);
 int		ft_create(t_philo *philos, t_all *init);
-void	ft_check_meals(t_philo *philos, t_index i);
+void	ft_check_meals(t_philo *philos);
 long	ft_get_time(t_time last);
 void	*routine(void *p);
 void	ft_sleep(long time);
