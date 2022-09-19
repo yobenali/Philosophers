@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/10 17:54:31 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/17 21:41:54 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/19 22:45:46 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ void	ft_supervisor(t_philo *philos)
 		while (i < philos->all->nb_p)
 		{
 			pthread_mutex_lock(&philos->all->printing);
-			if (philos->all->e_t != -1 && ft_check_meals(philos, i) == EXIT_FAILURE)
+			if (philos->all->e_t != -1 \
+				&& ft_check_meals(philos, i) == EXIT_FAILURE)
 				return ;
 			pthread_mutex_lock(&philos[i].read_meals);
 			if (ft_ch_flag(philos, i) == EXIT_FAILURE)

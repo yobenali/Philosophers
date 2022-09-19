@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 00:46:16 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/17 23:16:57 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/19 22:47:41 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,12 @@ int	main(int argc, char **argv)
 	if (argc == 5 || argc == 6)
 	{
 		init = malloc(sizeof(t_all));
-		ft_init_data(argv, init);
+		if (ft_init_data(argv, init) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
 		philos = malloc(sizeof(t_philo) * init->nb_p);
 		ft_init_philo(philos, init);
-		ft_create(philos, init);
+		if (ft_create(philos, init) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
 		ft_wait(philos);
 	}
 	else

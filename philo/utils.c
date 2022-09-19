@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/10 17:46:24 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/15 22:36:59 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/19 15:47:08 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,5 @@ void	ft_sleep(long time)
 	time_to_reach = ft_get_time() + time;
 	usleep((time * 0.90) * 1000);
 	while (ft_get_time() < time_to_reach)
-		usleep(37);
+		usleep(25);
 }
