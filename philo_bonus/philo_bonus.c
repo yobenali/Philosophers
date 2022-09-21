@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 00:46:16 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/19 22:47:41 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/19 23:12:29 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,20 @@ int	ft_init_data(char **argv, t_all *init)
 	return (EXIT_SUCCESS);
 }
 
+void	ft_close(t_philo *philos, t_all *init)
+{
+	int	i;
+
+	i = 0;
+	sem_close(init->printing);
+	sem_close(init->forks);
+	while (i < init->nb_p)
+	{
+		sem_close(philos[i].read_meals);
+		i++;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_all	*init;
@@ -103,6 +117,7 @@ int	main(int argc, char **argv)
 		if (ft_create(philos, init) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 		ft_wait(philos);
+		ft_close(philos, init);
 	}
 	else
 		write (2, "Error in passed args", 21);

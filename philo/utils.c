@@ -6,11 +6,22 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/10 17:46:24 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/19 15:47:08 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/21 19:02:34 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+int	is_digit(char *str)
+{
+	int	i;
+	i = 0;
+	while (str[i] >= '0' && str[i] <= '9' && str[i])
+		i++;
+	if (str[i] != '\0')
+		return (1);
+	return (0);
+}
 
 int	ft_atoi(char *str)
 {
@@ -22,6 +33,8 @@ int	ft_atoi(char *str)
 	res = 0;
 	i = 0;
 	max = INT_MAX / 10;
+	if (is_digit(str))
+		return (0);
 	while (str[i] && str[i] >= '0' && str[i] <= '9')
 	{
 		digit = str[i] - '0';

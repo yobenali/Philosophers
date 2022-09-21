@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/17 23:10:40 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/17 23:20:59 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/19 23:19:36 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,4 @@ void	*routine(void *p)
 		ft_sleep(philos->all->tt_s);
 		ft_print_philo(philos, "is thinking");
 	}
-	return (0);
 }

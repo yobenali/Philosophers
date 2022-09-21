@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 19:29:09 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/19 22:45:16 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/20 01:56:55 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_init_philo(t_philo *philos, t_all *init)
 
 void	ft_must_eat(t_philo *philos)
 {
-	if (philos->n_e >= philos->all->e_t && philos->all->e_t != -1)
+	if (philos->n_e == philos->all->e_t && philos->all->e_t != -1)
 	{
 		pthread_mutex_lock(&philos->all->check_eat);
 		philos->all->check++;

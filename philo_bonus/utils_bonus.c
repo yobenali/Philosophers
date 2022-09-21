@@ -6,7 +6,7 @@
 /*   By: yobenali <yobenali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/17 21:20:07 by yobenali          #+#    #+#             */
-/*   Updated: 2022/09/17 23:21:13 by yobenali         ###   ########.fr       */
+/*   Updated: 2022/09/21 19:03:12 by yobenali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,17 @@ void	ft_wait(t_philo *philos)
 	}
 }
 
+int	is_digit(char *str)
+{
+	int	i;
+	i = 0;
+	while (str[i] >= '0' && str[i] <= '9' && str[i])
+		i++;
+	if (str[i] != '\0')
+		return (1);
+	return (0);
+}
+
 int	ft_atoi(char *str)
 {
 	char	digit;
@@ -100,6 +111,8 @@ int	ft_atoi(char *str)
 	res = 0;
 	i = 0;
 	max = INT_MAX / 10;
+	if	(is_digit(str))
+		return (0);
 	while (str[i] && str[i] >= '0' && str[i] <= '9')
 	{
 		digit = str[i] - '0';
